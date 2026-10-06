@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Short-Video Funnel Diagnostic</title>
+<meta name="description" content="Locate where short-video commerce loses customers: reach, content, credibility or purchase. Based on Emelianova (2026).">
+<style>
+:root{
+  --bg:#fcfcfb; --card:#f3f2ee; --line:#dedcd5; --ink:#0b0b0b; --ink2:#52514e; --muted:#8a8882;
+  --accent:#2a78d6; --good:#1f7a3a; --warn:#9a6400; --bad:#b4332f; --neutral:#5f5e5a;
+  --good-bg:#e5f3e8; --warn-bg:#fbf0d9; --bad-bg:#fbe6e4; --neutral-bg:#ecebe7;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#1a1a19; --card:#242422; --line:#3a3a37; --ink:#ffffff; --ink2:#c3c2b7; --muted:#8f8e86;
+    --accent:#3987e5; --good:#6fd08a; --warn:#f0b54a; --bad:#ff8a84; --neutral:#c3c2b7;
+    --good-bg:#1f3326; --warn-bg:#3a2f17; --bad-bg:#3d2221; --neutral-bg:#2e2e2b;
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+main{max-width:960px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:28px;line-height:1.2;margin:0 0 8px}
+h2{font-size:18px;margin:32px 0 12px}
+p.lead{color:var(--ink2);margin:0 0 24px;max-width:720px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+label{display:block;font-size:14px;font-weight:600;margin-bottom:4px}
+.hint{display:block;font-size:12.5px;color:var(--muted);font-weight:400;margin-top:2px}
+input,select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:7px;background:var(--bg);color:var(--ink);font:inherit}
+input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px}
+fieldset{border:0;margin:0 0 20px;padding:0}
+legend{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2);margin-bottom:10px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+button{font:inherit;font-weight:600;border-radius:7px;padding:10px 16px;cursor:pointer;border:1px solid var(--accent)}
+button.primary{background:var(--accent);color:#fff}
+button.secondary{background:transparent;color:var(--accent)}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:640px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12.5px;color:var(--ink2);text-transform:uppercase;letter-spacing:.03em}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;font-size:13px;font-weight:600;white-space:nowrap}
+.b-good{background:var(--good-bg);color:var(--good)}
+.b-warn{background:var(--warn-bg);color:var(--warn)}
+.b-bad{background:var(--bad-bg);color:var(--bad)}
+.b-neutral{background:var(--neutral-bg);color:var(--neutral)}
+.note{display:block;font-size:12.5px;color:var(--muted);margin-top:4px}
+.diag{border-left:4px solid var(--accent);padding:14px 16px;background:var(--card);border-radius:0 10px 10px 0;margin-top:16px}
+.diag h3{margin:0 0 6px;font-size:17px}
+.diag p{margin:6px 0}
+footer{margin-top:40px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+a{color:var(--accent)}
+.err{color:var(--bad);font-size:14px;margin-top:8px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Short-Video Funnel Diagnostic</h1>
+  <p class="lead">Views but no sales? Enter your numbers and find out <strong>which stage</strong> of the journey is losing customers: reach, content, credibility or purchase, and which stages <strong>cannot be judged yet</strong> because there is too little data.</p>
+
+  <form id="f" class="card" novalidate>
+    <fieldset>
+      <legend>1 · Route to purchase</legend>
+      <div class="grid">
+        <div>
+          <label for="route">How do viewers buy?</label>
+          <select id="route">
+            <option value="profile">Profile route: video → profile → link → site</option>
+            <option value="inapp">In-app route: video → product card → in-app checkout</option>
+            <option value="dm">Conversational route: video → comment or DM → offer</option>
+          </select>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>2 · Stage 0: reach <span style="text-transform:none;font-weight:400">(optional)</span></legend>
+      <div class="grid">
+        <div><label for="batchMedian">Median views per video, this batch</label><input id="batchMedian" type="number" min="0" inputmode="numeric"></div>
+        <div><label for="usualLow">Your usual low end<span class="hint">e.g. 25th percentile of views on your recent videos</span></label><input id="usualLow" type="number" min="0" inputmode="numeric"></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>3 · Counts for this batch</legend>
+      <div class="grid">
+        <div><label for="views">Total views</label><input id="views" type="number" min="0" inputmode="numeric" required></div>
+        <div><label for="arr" id="lArr">Profile visits</label><input id="arr" type="number" min="0" inputmode="numeric" required></div>
+        <div><label for="act" id="lAct">Link clicks</label><input id="act" type="number" min="0" inputmode="numeric" required></div>
+        <div><label for="buy">Purchases</label><input id="buy" type="number" min="0" inputmode="numeric" required></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>4 · Your normal rates <span style="text-transform:none;font-weight:400">(optional, from previous months, in %)</span></legend>
+      <div class="grid">
+        <div><label for="b1" id="lB1">Views → profile visits, %</label><input id="b1" type="number" min="0" max="100" step="any" inputmode="decimal"></div>
+        <div><label for="b2" id="lB2">Profile visits → clicks, %</label><input id="b2" type="number" min="0" max="100" step="any" inputmode="decimal"></div>
+        <div><label for="b3" id="lB3">Clicks → purchases, %</label><input id="b3" type="number" min="0" max="100" step="any" inputmode="decimal"></div>
+      </div>
+    </fieldset>
+
+    <div class="actions">
+      <button type="submit" class="primary">Diagnose</button>
+      <button type="button" class="secondary" id="example">Load worked example</button>
+    </div>
+    <div id="err" class="err" role="alert"></div>
+  </form>
+
+  <section id="out" hidden aria-live="polite">
+    <h2>Results</h2>
+    <div class="card table-wrap">
+      <table>
+        <thead><tr><th>Stage</th><th>Events / trials</th><th>Rate</th><th>95% interval</th><th>Normal rate</th><th>Verdict</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div class="diag" id="diag"></div>
+  </section>
+
+  <footer>
+    <p><strong>How it works.</strong> Stages are judged in order, from reach to purchase. Each conversion rate gets a 95% Wilson confidence interval. A stage is flagged when your normal rate lies outside that interval. A stage with fewer than about 60 successful transitions is marked <em>not yet diagnosable</em> unless the gap is already clear: a rule of thumb that keeps the relative error near ±25%, not a universal threshold. Your normal rate is itself an estimate, so treat close calls with care.</p>
+    <p>This is a diagnostic aid, not a causal test. Confirm any diagnosis with a controlled comparison, such as matched video variants.</p>
+    <p>Method: Emelianova, M. (2026). <em>Diagnosing conversion failure in short-video commerce: A stage-based framework for localising drop-off across reach, content, credibility and purchase.</em> Zenodo. <a href="https://doi.org/10.5281/zenodo.23142065">doi.org/10.5281/zenodo.23142065</a></p>
+    <p>All calculations run in your browser. No data is sent anywhere.</p>
+  </footer>
+</main>
+
+<script>
+const ROUTES = {
+  profile: {arr:'Profile visits', act:'Link clicks', s1:'Views → profile visits', s2:'Profile visits → clicks', s3:'Clicks → purchases', surface:'profile'},
+  inapp:   {arr:'Product-card views', act:'Checkout starts', s1:'Views → product-card views', s2:'Product-card views → checkout starts', s3:'Checkout starts → purchases', surface:'product card'},
+  dm:      {arr:'Conversations started', act:'Offer link clicks', s1:'Views → conversations', s2:'Conversations → offer clicks', s3:'Offer clicks → purchases', surface:'conversation'}
+};
+const MIN_EVENTS = 60;
+const $ = id => document.getElementById(id);
+
+function setLabels(){
+  const r = ROUTES[$('route').value];
+  $('lArr').textContent = r.arr; $('lAct').textContent = r.act;
+  $('lB1').textContent = r.s1 + ', %'; $('lB2').textContent = r.s2 + ', %'; $('lB3').textContent = r.s3 + ', %';
+}
+$('route').addEventListener('change', setLabels);
+
+function wilson(k, n, z = 1.96){
+  if (n <= 0) return null;
+  const p = k / n, d = 1 + z*z/n;
+  const c = (p + z*z/(2*n)) / d;
+  const h = z * Math.sqrt(p*(1-p)/n + z*z/(4*n*n)) / d;
+  return {p, lo: Math.max(0, c - h), hi: Math.min(1, c + h)};
+}
+const pct = x => (x*100 < 1 ? (x*100).toFixed(2) : (x*100).toFixed(1)) + '%';
+const num = v => { const t = String(v).trim(); return t === '' ? null : Number(t); };
+
+const BADGE = {
+  bad:     ['b-bad', '▼ Below normal'],
+  good:    ['b-good', '● In line with normal'],
+  above:   ['b-good', '▲ Above normal'],
+  wait:    ['b-warn', '◌ Not yet diagnosable'],
+  measured:['b-neutral', '■ Measured, no normal rate'],
+  na:      ['b-neutral', '– Not assessed'],
+  blocked: ['b-neutral', '⏸ Not interpretable yet']
+};
+const badge = key => `<span class="badge ${BADGE[key][0]}">${BADGE[key][1]}</span>`;
+
+const ADVICE = {
+  0: 'Reach failure: the platform showed this batch to fewer people than usual, so later stages could not be tested. Work on the signals the recommendation system observes, such as early retention and completion, and treat beliefs about "what the algorithm wants" as hypotheses to test.',
+  1: 'Content failure: people watched but did not move on. The main target is the video itself, especially the hook and its emotional pull. First rule out transition friction: an unclear call to action, a missing product link or an interface that hides the next step.',
+  2: s => `Credibility failure: people reached the ${s} but did not act on the offer. First check that the videos promise what the ${s} delivers. Then audit which credibility cues are prominent there and how they read: useful information, trustworthiness, attractiveness and similarity to the audience.`,
+  3: 'Purchase failure: people started to buy but did not finish. Check that the price, product presentation and tone match what the videos promised, and look for risk at the point of purchase: unclear costs, weak guarantees, missing reviews. Then test the possible causes one at a time.'
+};
+
+function judge(k, n, base){
+  const ci = wilson(k, n);
+  if (!ci) return {ci:null, key:'na', note:'No trials at this stage.'};
+  let key, note = '';
+  if (base == null){
+    key = k < MIN_EVENTS ? 'wait' : 'measured';
+    if (key === 'wait') note = `Only ${k} events; about ${MIN_EVENTS} are needed.`;
+  } else if (base > ci.hi){
+    key = 'bad'; if (k < MIN_EVENTS) note = 'Clear gap despite few events; confirm with more data.';
+  } else if (base < ci.lo){
+    key = 'above';
+  } else {
+    key = k < MIN_EVENTS ? 'wait' : 'good';
+    if (key === 'wait') note = `Normal rate is inside a wide interval; only ${k} events, about ${MIN_EVENTS} needed.`;
+  }
+  return {ci, key, note};
+}
+
+function diagnose(e){
+  e && e.preventDefault();
+  const err = $('err'); err.textContent = '';
+  const r = ROUTES[$('route').value];
+  const views = num($('views').value), arr = num($('arr').value), act = num($('act').value), buy = num($('buy').value);
+  if ([views, arr, act, buy].some(v => v == null || !Number.isFinite(v) || v < 0)){
+    err.textContent = 'Please fill in all four counts with numbers of zero or more.'; return;
+  }
+  if (arr > views || act > arr || buy > act){
+    err.textContent = 'Each stage should be no larger than the one before it (views ≥ arrivals ≥ actions ≥ purchases).'; return;
+  }
+  const b = ['b1','b2','b3'].map(id => { const v = num($(id).value); return v == null ? null : v/100; });
+  const bm = num($('batchMedian').value), ul = num($('usualLow').value);
+
+  const rows = [];
+  let stage0 = 'na', stage0note = 'Add median views and your usual low end to assess reach.';
+  if (bm != null && ul != null){
+    stage0 = bm < ul ? 'bad' : 'good';
+    stage0note = bm < ul ? `Median ${bm.toLocaleString()} is below your usual low end of ${ul.toLocaleString()}.` : `Median ${bm.toLocaleString()} is within your usual range.`;
+  }
+  rows.push({name:'0 · Reach', counts:`${views.toLocaleString()} views`, rate:'', ci:'', base:'', key:stage0, note:stage0note});
+
+  const stages = [[arr, views, b[0], '1 · Content', r.s1], [act, arr, b[1], '2 · Credibility', r.s2], [buy, act, b[2], '3 · Purchase', r.s3]];
+  let firstFail = stage0 === 'bad' ? 0 : null;
+  stages.forEach(([k, n, base, name, desc], i) => {
+    const j = judge(k, n, base);
+    let key = j.key, note = j.note;
+    if (firstFail !== null && firstFail < i + 1){ key = 'blocked'; note = `An earlier stage is below normal, so the traffic reaching this stage is filtered.`; }
+    else if (key === 'bad' && firstFail === null) firstFail = i + 1;
+    rows.push({name, desc, counts:`${k.toLocaleString()} / ${n.toLocaleString()}`, rate: j.ci ? pct(j.ci.p) : '–',
+      ci: j.ci ? `${pct(j.ci.lo)} – ${pct(j.ci.hi)}` : '–', base: base == null ? '–' : pct(base), key, note});
+  });
+
+  $('rows').innerHTML = rows.map(x => `<tr>
+    <td><strong>${x.name}</strong>${x.desc ? `<span class="note">${x.desc}</span>` : ''}</td>
+    <td class="num">${x.counts}</td><td class="num">${x.rate}</td><td class="num">${x.ci}</td><td class="num">${x.base}</td>
+    <td>${badge(x.key)}${x.note ? `<span class="note">${x.note}</span>` : ''}</td></tr>`).join('');
+
+  const waiting = rows.slice(1).filter(x => x.key === 'wait').map(x => x.name.split(' · ')[1].toLowerCase());
+  let html;
+  if (firstFail !== null){
+    const adv = typeof ADVICE[firstFail] === 'function' ? ADVICE[firstFail](r.surface) : ADVICE[firstFail];
+    html = `<h3>Diagnosis: stage ${firstFail}</h3><p>${adv}</p><p>Leave later stages alone for now: they cannot be judged fairly until this stage recovers.</p>`;
+  } else {
+    html = `<h3>No stage is clearly below normal</h3><p>${b.every(v => v == null) ? 'Add your normal rates to compare against. Without them the tool can only show rates and their uncertainty.' : 'Every stage that can be judged is in line with your normal rates.'}</p>`;
+  }
+  if (waiting.length) html += `<p><strong>Not yet diagnosable:</strong> ${waiting.join(', ')}. Collect more data before changing anything there.</p>`;
+  html += `<p style="color:var(--muted);font-size:13px">Treat this as a hypothesis and confirm it with a controlled test.</p>`;
+  $('diag').innerHTML = html;
+  $('out').hidden = false;
+  $('out').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+$('f').addEventListener('submit', diagnose);
+$('example').addEventListener('click', () => {
+  $('route').value = 'profile'; setLabels();
+  const v = {batchMedian:9000, usualLow:6500, views:180000, arr:1260, act:151, buy:3, b1:0.72, b2:18, b3:2.5};
+  Object.entries(v).forEach(([k, x]) => $(k).value = x);
+  diagnose();
+});
+setLabels();
+</script>
+</body>
+</html>

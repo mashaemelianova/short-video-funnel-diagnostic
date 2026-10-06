@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this tool, please cite the paper below."
+title: "Short-Video Funnel Diagnostic"
+authors:
+  - family-names: Emelianova
+    given-names: Maria
+    orcid: "https://orcid.org/0009-0000-3165-9500"
+license: MIT
+preferred-citation:
+  type: article
+  title: "Diagnosing Conversion Failure in Short-Video Commerce: A Stage-Based Framework for Localising Drop-off Across Reach, Content, Credibility and Purchase"
+  authors:
+    - family-names: Emelianova
+      given-names: Maria
+      orcid: "https://orcid.org/0009-0000-3165-9500"
+  year: 2026
+  publisher:
+    name: Zenodo
+  doi: "10.5281/zenodo.23142065"
